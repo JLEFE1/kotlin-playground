@@ -1,6 +1,7 @@
 package com.homegrown
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import java.sql.Connection
 import java.sql.Statement
@@ -10,8 +11,9 @@ data class City(val name: String, val population: Int)
 class CityService(private val connection: Connection) {
     companion object {
         private const val CREATE_TABLE_CITIES =
-            "CREATE TABLE CITIES (ID SERIAL PRIMARY KEY, NAME VARCHAR(255), POPULATION INT);"
+            "CREATE TABLE IF NOT EXISTS CITIES (ID SERIAL PRIMARY KEY, NAME VARCHAR(255), POPULATION INT);"
         private const val SELECT_CITY_BY_ID = "SELECT name, population FROM cities WHERE id = ?"
+        private const val SELECT_ALL_CITIES = "SELECT name, population FROM cities"
         private const val INSERT_CITY = "INSERT INTO cities (name, population) VALUES (?, ?)"
         private const val UPDATE_CITY = "UPDATE cities SET name = ?, population = ? WHERE id = ?"
         private const val DELETE_CITY = "DELETE FROM cities WHERE id = ?"
@@ -37,6 +39,25 @@ class CityService(private val connection: Connection) {
             return@withContext generatedKeys.getInt(1)
         } else {
             throw Exception("Unable to retrieve the id of the newly inserted city")
+        }
+    }
+
+    // Read all city
+    suspend fun readAll(): List<City> = withContext(Dispatchers.IO) {
+        val statement = connection.prepareStatement(SELECT_ALL_CITIES)
+        val resultSet = statement.executeQuery()
+
+        if (resultSet.next()) {
+            val name = resultSet.getString("name")
+            val population = resultSet.getInt("population")
+
+            return@withContext resultSet.use {
+                generateSequence {
+                    if (resultSet.next()) City(resultSet.getString("name"), resultSet.getInt("population")) else null
+                }.toList()  // must be inside the use() block
+            }
+        } else {
+            return@withContext emptyList()
         }
     }
 
