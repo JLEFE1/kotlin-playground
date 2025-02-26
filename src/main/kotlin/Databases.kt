@@ -1,7 +1,6 @@
 package com.homegrown
 
 import com.fasterxml.jackson.databind.*
-import dev.hayden.KHealth
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.serialization.kotlinx.json.*
@@ -16,7 +15,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 fun Application.configureDatabases() {
-    val dbConnection: Connection = connectToPostgres(embedded = true)
+//    val dbConnection: Connection = connectToPostgres(embedded = true)
+    val dbConnection: Connection = connectToPostgres(embedded = false)
     val cityService = CityService(dbConnection)
     
     routing {

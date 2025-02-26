@@ -36,3 +36,10 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }
+
+ktor {
+    docker {
+        localImageName.set("kotlin-playground")
+        imageTag.set("0.0.1-preview")
+    }
+}
