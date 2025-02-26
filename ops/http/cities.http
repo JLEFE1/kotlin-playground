@@ -1,0 +1,14 @@
+### Opladen city
+#@no-log
+POST https://{{host}}/cities
+Content-Type: application/json
+
+{
+  "name": "{{$random.alphabetic(10)}}",
+  "population": "{{$random.integer}}"
+  }
+
+
+### Ophalen cities
+GET https://{{host}}/cities
+Content-Type: application/json
