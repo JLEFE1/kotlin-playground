@@ -6,3 +6,12 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+/workspace.xml
+/misc.xml
+/LNKD.tech Editor.xml
+/kotlinc.xml
+/gradle.xml
+/dataSources.xml
+/dataSources.local.xml
+/compiler.xml
+/inspectionProfiles/
